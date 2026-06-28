@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#004A7C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="InternoPed UEA">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="interno_manifest.json">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<title>InternoPed UEA – Avaliação do Interno em Pediatria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --azul: #004A7C;
+  --azul-claro: #0072BC;
+  --azul-medio: #005F9E;
+  --verde: #006B3F;
+  --verde-claro: #00A86B;
+  --turquesa: #00B4C8;
+  --amarelo: #F5A623;
+  --vermelho: #D0021B;
+  --roxo: #6B2FA0;
+  --roxo-claro: #8B4FBF;
+  --cinza-claro: #F4F6F8;
+  --cinza-medio: #E1E6EB;
+  --cinza-escuro: #6B7785;
+  --texto: #1A2535;
+  --sombra-card: 0 4px 24px rgba(0,0,0,0.08);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font: 'Montserrat', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: var(--font);
+  background: var(--cinza-claro);
+  color: var(--texto);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* ===== SPLASH ===== */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(145deg, var(--azul) 0%, var(--roxo) 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; animation: splashOut 0.5s ease 2.2s forwards;
+}
+#splash .logo-icon {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; animation: pulse 1.5s ease-in-out infinite;
+}
+#splash h1 { color: white; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+#splash p { color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 500; }
+#splash .uea-tag {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: white; font-size: 11px; font-weight: 600; padding: 4px 14px;
+  border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
+}
+@keyframes splashOut { to { opacity: 0; pointer-events: none; visibility: hidden; } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* ===== HEADER ===== */
+#app-header {
+  position: sticky; top: 0; z-index: 100;
+  background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%);
+  padding: 14px 16px 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-brand .icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.header-brand h1 { color: white; font-size: 16px; font-weight: 800; }
+.header-brand p { color: rgba(255,255,255,0.75); font-size: 10px; font-weight: 500; }
+.header-sync-btn {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: white; border-radius: 8px; padding: 6px 10px;
+  font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: background 0.2s; white-space: nowrap;
+}
+.header-sync-btn:active { background: rgba(255,255,255,0.25); }
+
+/* ===== TABS ===== */
+.tab-bar {
+  display: flex; overflow-x: auto; gap: 4px; padding: 0 4px 8px;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 10px; border-radius: 10px; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.65);
+  font-family: var(--font); font-size: 9.5px; font-weight: 600;
+  transition: all 0.2s; min-width: 64px;
+}
+.tab-btn .tab-icon { font-size: 16px; }
+.tab-btn.active { background: white; color: var(--azul); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.tab-btn:active { transform: scale(0.95); }
+
+/* ===== SCREENS ===== */
+.screen { display: none; min-height: calc(100vh - 120px); padding-bottom: 30px; }
+.screen.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== SECTION HEADER ===== */
+.section-header { padding: 18px 16px; }
+.section-header.azul { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%); }
+.section-header.roxo { background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-claro) 100%); }
+.section-header.verde { background: linear-gradient(135deg, var(--verde) 0%, var(--verde-claro) 100%); }
+.section-header.escuro { background: linear-gradient(135deg, #1A2535 0%, #2C3E55 100%); }
+.section-header h2 { color: white; font-size: 18px; font-weight: 800; }
+.section-header p { color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 3px; }
+
+/* ===== CARD ===== */
+.card {
+  background: white; border-radius: var(--radius); padding: 16px;
+  box-shadow: var(--sombra-card); margin: 12px 12px 0;
+}
+.card-title {
+  font-size: 13px; font-weight: 700; color: var(--texto);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+}
+.card-title .badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; background: var(--azul-claro); color: white;
+}
+
+/* ===== FORM ===== */
+.form-group { margin-bottom: 14px; }
+label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--cinza-escuro); margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+input[type=text], input[type=date], select, textarea {
+  width: 100%; padding: 11px 13px; border: 1.5px solid var(--cinza-medio);
+  border-radius: var(--radius-sm); font-family: var(--font); font-size: 13px;
+  color: var(--texto); background: white; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--azul-claro); box-shadow: 0 0 0 3px rgba(0,114,188,0.1);
+}
+textarea { resize: none; height: 80px; }
+
+/* ===== BTN ===== */
+.btn {
+  display: block; width: 100%; padding: 14px; border: none;
+  border-radius: var(--radius-sm); font-family: var(--font);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; text-align: center;
+}
+.btn-primary { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%); color: white; box-shadow: 0 4px 12px rgba(0,74,124,0.35); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-roxo { background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-claro) 100%); color: white; box-shadow: 0 4px 12px rgba(107,47,160,0.35); }
+.btn-verde { background: linear-gradient(135deg, var(--verde) 0%, var(--verde-claro) 100%); color: white; box-shadow: 0 4px 12px rgba(0,107,63,0.35); }
+.btn-secondary { background: var(--cinza-claro); color: var(--texto); border: 1.5px solid var(--cinza-medio); }
+.btn-danger { background: rgba(208,2,27,0.08); color: var(--vermelho); border: 1.5px solid rgba(208,2,27,0.2); }
+.btn + .btn { margin-top: 10px; }
+
+/* ===== ALERT ===== */
+.alert-box {
+  border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px;
+  margin: 10px 0; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+}
+.alert-box.info { background: rgba(0,114,188,0.08); border-left: 3px solid var(--azul-claro); }
+.alert-box.verde { background: rgba(0,107,63,0.08); border-left: 3px solid var(--verde); }
+.alert-box.aviso { background: rgba(245,166,35,0.12); border-left: 3px solid var(--amarelo); }
+
+/* ===== MISC ===== */
+.divider { height: 1px; background: var(--cinza-claro); margin: 14px 0; }
+.flex-row { display: flex; gap: 10px; }
+.flex-row > * { flex: 1; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--cinza-escuro); }
+.empty-state .icon { font-size: 48px; margin-bottom: 10px; }
+.empty-state p { font-size: 13px; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--texto); color: white; border-radius: 10px; padding: 12px 20px;
+  font-size: 13px; font-weight: 600; z-index: 9000; opacity: 0;
+  transition: all 0.3s; white-space: nowrap; max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.sucesso { background: var(--verde); }
+.toast.erro { background: var(--vermelho); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 8000;
+  background: rgba(0,0,0,0.5); align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; animation: fadeIn 0.2s; }
+.modal-box {
+  background: white; border-radius: 20px 20px 0 0; padding: 20px;
+  width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 40px; height: 4px; background: var(--cinza-medio); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
+
+/* ===== FREQUÊNCIA ===== */
+.freq-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.freq-stat {
+  background: var(--cinza-claro); border-radius: var(--radius-sm); padding: 12px 8px;
+  text-align: center; border: 1.5px solid var(--cinza-medio);
+}
+.freq-stat .fs-val { font-size: 20px; font-weight: 800; line-height: 1; color: var(--cinza-escuro); }
+.freq-stat .fs-label { font-size: 9px; font-weight: 600; color: var(--cinza-escuro); margin-top: 3px; text-transform: uppercase; }
+.freq-stat.azul { background: rgba(0,114,188,0.06); border-color: rgba(0,114,188,0.2); }
+.freq-stat.azul .fs-val { color: var(--azul-claro); }
+.freq-stat.verde { background: rgba(0,107,63,0.06); border-color: rgba(0,107,63,0.2); }
+.freq-stat.verde .fs-val { color: var(--verde); }
+.freq-stat.amarelo { background: rgba(245,166,35,0.1); border-color: rgba(245,166,35,0.3); }
+.freq-stat.amarelo .fs-val { color: #7A4A00; }
+.freq-stat.vermelho { background: rgba(208,2,27,0.06); border-color: rgba(208,2,27,0.2); }
+.freq-stat.vermelho .fs-val { color: var(--vermelho); }
+
+.cal-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.cal-table th {
+  background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
+  color: white; padding: 9px 6px;
+  font-weight: 700; text-align: center; font-size: 10px; text-transform: uppercase;
+}
+.cal-table th:first-child { text-align: left; }
+.cal-table td { padding: 6px 4px; border-bottom: 1px solid var(--cinza-claro); vertical-align: middle; text-align: center; }
+.cal-table td:first-child { text-align: left; font-weight: 600; padding-left: 4px; white-space: nowrap; }
+.cal-table tr:last-child td { border-bottom: none; }
+.cal-table tr:hover td { background: rgba(0,74,124,0.03); }
+
+.att-btn {
+  width: 38px; height: 34px; border: 2px solid var(--cinza-medio); border-radius: 8px;
+  background: var(--cinza-claro); font-size: 14px; cursor: pointer;
+  transition: all 0.18s; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font); font-weight: 800; color: var(--cinza-escuro);
+}
+.att-btn:active { transform: scale(0.88); }
+.att-btn.presente { background: rgba(0,107,63,0.1); border-color: var(--verde); color: var(--verde); }
+.att-btn.falta { background: rgba(208,2,27,0.08); border-color: var(--vermelho); color: var(--vermelho); }
+
+.prog-bar-wrap { margin: 8px 0 4px; }
+.prog-bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+.prog-bar-label span:first-child { font-weight: 600; }
+.prog-bar-label span:last-child { font-weight: 700; }
+.prog-bar-bg { height: 8px; background: var(--cinza-medio); border-radius: 4px; overflow: hidden; }
+.prog-bar { height: 100%; border-radius: 4px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+.prog-bar.verde { background: linear-gradient(90deg, var(--verde) 0%, var(--verde-claro) 100%); }
+.prog-bar.azul { background: linear-gradient(90deg, var(--azul) 0%, var(--azul-claro) 100%); }
+.prog-bar.amarelo { background: linear-gradient(90deg, #7A4A00 0%, var(--amarelo) 100%); }
+.prog-bar.vermelho { background: linear-gradient(90deg, var(--vermelho) 0%, #FF4D63 100%); }
+
+/* ===== COMPETÊNCIAS ===== */
+.domain-block {
+  margin-bottom: 10px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--cinza-medio); overflow: hidden;
+}
+.domain-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px; cursor: pointer; user-select: none;
+  background: var(--cinza-claro); transition: background 0.2s;
+}
+.domain-header:active { background: var(--cinza-medio); }
+.domain-header-left { display: flex; align-items: center; gap: 8px; }
+.domain-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  color: white;
+}
+.domain-name { font-size: 12px; font-weight: 700; color: var(--texto); line-height: 1.3; }
+.domain-avg {
+  font-size: 11px; font-weight: 700; padding: 2px 10px;
+  border-radius: 20px; background: white; color: var(--cinza-escuro);
+  border: 1px solid var(--cinza-medio); white-space: nowrap;
+}
+.domain-toggle { font-size: 13px; color: var(--cinza-escuro); transition: transform 0.2s; flex-shrink: 0; }
+.domain-block.open .domain-toggle { transform: rotate(180deg); }
+.domain-body { display: none; padding: 10px 14px 14px; }
+.domain-block.open .domain-body { display: block; }
+
+.comp-item { padding: 10px 0; border-bottom: 1px solid var(--cinza-claro); }
+.comp-item:last-child { border-bottom: none; padding-bottom: 0; }
+.comp-code { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.comp-txt { font-size: 12px; color: var(--texto); line-height: 1.4; margin-bottom: 8px; }
+.rating-row { display: flex; gap: 4px; align-items: center; }
+.rating-btn {
+  flex: 1; padding: 7px 2px; border: 2px solid var(--cinza-medio); border-radius: 7px;
+  background: white; font-family: var(--font); font-size: 11px; font-weight: 800;
+  color: var(--cinza-escuro); cursor: pointer; text-align: center; transition: all 0.18s;
+  line-height: 1.2;
+}
+.rating-btn:active { transform: scale(0.92); }
+.rating-btn.sel-1 { border-color: var(--vermelho); background: rgba(208,2,27,0.08); color: var(--vermelho); }
+.rating-btn.sel-2 { border-color: var(--amarelo); background: rgba(245,166,35,0.1); color: #7A4A00; }
+.rating-btn.sel-3 { border-color: var(--azul-claro); background: rgba(0,114,188,0.08); color: var(--azul-claro); }
+.rating-btn.sel-4 { border-color: var(--verde); background: rgba(0,107,63,0.08); color: var(--verde); }
+.no-btn {
+  padding: 7px 7px; border: 2px solid var(--cinza-medio); border-radius: 7px;
+  background: white; font-family: var(--font); font-size: 10px; font-weight: 700;
+  color: var(--cinza-escuro); cursor: pointer; transition: all 0.18s; white-space: nowrap; flex-shrink: 0;
+}
+.no-btn.sel { border-color: var(--cinza-escuro); background: var(--cinza-claro); color: var(--texto); }
+.rating-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--cinza-escuro); margin-top: 3px; padding: 0 2px; }
+
+/* ===== CONCEITO ===== */
+.conceito-sel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+.conceito-btn {
+  padding: 10px 4px; border: 2px solid var(--cinza-medio); border-radius: 8px;
+  background: white; font-family: var(--font); font-size: 12px; font-weight: 800;
+  color: var(--cinza-escuro); cursor: pointer; text-align: center; transition: all 0.2s; line-height: 1.3;
+}
+.conceito-btn.sel-I { border-color: var(--vermelho); background: rgba(208,2,27,0.08); color: var(--vermelho); }
+.conceito-btn.sel-R { border-color: var(--amarelo); background: rgba(245,166,35,0.1); color: #7A4A00; }
+.conceito-btn.sel-B { border-color: var(--azul-claro); background: rgba(0,114,188,0.08); color: var(--azul-claro); }
+.conceito-btn.sel-MB { border-color: var(--verde-claro); background: rgba(0,107,63,0.06); color: var(--verde); }
+.conceito-btn.sel-E { border-color: var(--verde); background: rgba(0,107,63,0.1); color: var(--verde); }
+.conceito-btn:active { transform: scale(0.95); }
+
+/* ===== RELATÓRIO ===== */
+.rel-meta { font-size: 12px; line-height: 1.8; color: var(--cinza-escuro); }
+.rel-meta strong { color: var(--texto); }
+.rel-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.rel-bar-who { font-size: 9px; font-weight: 800; width: 30px; flex-shrink: 0; text-transform: uppercase; }
+.rel-bar-bg { flex: 1; height: 10px; background: var(--cinza-medio); border-radius: 5px; overflow: hidden; }
+.rel-bar { height: 100%; border-radius: 5px; transition: width 0.8s; }
+.rel-bar.auto-bar { background: linear-gradient(90deg, var(--azul) 0%, var(--azul-claro) 100%); }
+.rel-bar.prec-bar { background: linear-gradient(90deg, var(--verde) 0%, var(--verde-claro) 100%); }
+.rel-bar-val { font-size: 11px; font-weight: 700; width: 26px; text-align: right; flex-shrink: 0; }
+
+/* ===== INSTALL / UPDATE ===== */
+#install-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 8500;
+  background: white; border-top: 1px solid var(--cinza-medio); padding: 14px 16px;
+  display: none; align-items: center; gap: 12px; max-width: 480px; margin: 0 auto;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+#update-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 8500;
+  background: var(--azul); padding: 12px 16px;
+  display: none; align-items: center; gap: 10px; max-width: 480px; margin: 0 auto;
+}
+
+@media print {
+  #app-header, #install-banner, #update-banner, .btn, .modal-overlay, #splash { display: none !important; }
+  .screen { display: block !important; }
+  #screen-frequencia, #screen-autoaval, #screen-preceptor { display: none !important; }
+  #screen-relatorio { display: block !important; }
+  body { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px">
+    <div class="logo-icon">🩺</div>
+    <h1>InternoPed UEA</h1>
+    <p>Avaliação do Interno em Pediatria</p>
+  </div>
+  <div class="uea-tag">Universidade do Estado do Amazonas</div>
+</div>
+
+<!-- HEADER -->
+<div id="app-header">
+  <div class="header-top">
+    <div class="header-brand">
+      <div class="icon">🩺</div>
+      <div>
+        <h1>InternoPed UEA</h1>
+        <p>Internato em Pediatria · SBP NT 134/2024</p>
+      </div>
+    </div>
+    <button class="header-sync-btn" id="btn-sync" onclick="syncData()">↑ Sync</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showScreen('frequencia',this)">
+      <span class="tab-icon">📅</span>Frequência
+    </button>
+    <button class="tab-btn" onclick="showScreen('autoaval',this)">
+      <span class="tab-icon">🔍</span>Autoaval.
+    </button>
+    <button class="tab-btn" onclick="showScreen('preceptor',this)">
+      <span class="tab-icon">👨‍⚕️</span>Preceptor
+    </button>
+    <button class="tab-btn" onclick="showScreen('relatorio',this)">
+      <span class="tab-icon">📊</span>Relatório
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ABA 1: FREQUÊNCIA -->
+<!-- ============================================================ -->
+<div id="screen-frequencia" class="screen active">
+  <div class="section-header azul">
+    <h2>📅 Frequência do Internato</h2>
+    <p>Registro de presença por período — manhã e tarde</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ Configuração <span class="badge">Dados gerais</span></div>
+    <div class="form-group">
+      <label>Nome do Interno</label>
+      <input type="text" id="cfg-interno" placeholder="Nome completo" oninput="saveConfig()">
+    </div>
+    <div class="form-group">
+      <label>Preceptor Responsável</label>
+      <input type="text" id="cfg-preceptor" placeholder="Nome do preceptor" oninput="saveConfig()">
+    </div>
+    <div class="flex-row">
+      <div class="form-group">
+        <label>Início</label>
+        <input type="date" id="cfg-inicio" onchange="saveConfig(); buildCalendar()">
+      </div>
+      <div class="form-group">
+        <label>Término</label>
+        <input type="date" id="cfg-fim" onchange="saveConfig(); buildCalendar()">
+      </div>
+    </div>
+    <div class="flex-row">
+      <div class="form-group">
+        <label>🌅 Cenário Manhã</label>
+        <input type="text" id="cfg-manha" placeholder="Ex: Ambulatório" oninput="saveConfig(); buildCalendar()">
+      </div>
+      <div class="form-group">
+        <label>🌆 Cenário Tarde</label>
+        <input type="text" id="cfg-tarde" placeholder="Ex: Enfermaria" oninput="saveConfig(); buildCalendar()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Frequência Atual</div>
+    <div class="freq-stats-grid" style="margin-bottom:10px">
+      <div class="freq-stat azul"><div class="fs-val" id="stat-manha">–</div><div class="fs-label" id="stat-manha-lbl">Manhã</div></div>
+      <div class="freq-stat verde"><div class="fs-val" id="stat-tarde">–</div><div class="fs-label" id="stat-tarde-lbl">Tarde</div></div>
+      <div class="freq-stat" id="stat-global-card"><div class="fs-val" id="stat-global">–</div><div class="fs-label">Global</div></div>
+    </div>
+    <div style="font-size:10px; color:var(--cinza-escuro); text-align:center;">
+      Toque no botão para ciclar: ○ Pendente → ✓ Presente → ✗ Falta
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📆 Calendário de Atividades</div>
+    <div id="calendar-container">
+      <div class="empty-state">
+        <div class="icon">📅</div>
+        <p>Configure o interno e as datas para gerar o calendário.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ABA 2: AUTOAVALIAÇÃO -->
+<!-- ============================================================ -->
+<div id="screen-autoaval" class="screen">
+  <div class="section-header roxo">
+    <h2>🔍 Autoavaliação</h2>
+    <p>45 competências SBP NT 134/2024 · 6 domínios ACGME</p>
+  </div>
+  <div class="card">
+    <div class="alert-box info">
+      <span>ℹ️</span>
+      <div><strong>Escala:</strong> 1 = Não atingi · 2 = Parcialmente · 3 = Em desenvolvimento · 4 = Atingi plenamente · N/O = Não observado</div>
+    </div>
+  </div>
+  <div style="padding: 0 12px" id="auto-domains-container"></div>
+  <div class="card">
+    <div class="form-group">
+      <label>Reflexão Escrita do Interno</label>
+      <textarea id="auto-comments" placeholder="Descreva seus aprendizados, dificuldades e metas para o próximo período..." style="height:100px" oninput="S.selfComments=this.value; save()"></textarea>
+    </div>
+    <button class="btn btn-roxo" onclick="confirmAutoaval()">✓ Confirmar Autoavaliação</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ABA 3: AVALIAÇÃO DO PRECEPTOR -->
+<!-- ============================================================ -->
+<div id="screen-preceptor" class="screen">
+  <div class="section-header verde">
+    <h2>👨‍⚕️ Avaliação do Preceptor</h2>
+    <p>45 competências SBP NT 134/2024 · visão do preceptor</p>
+  </div>
+  <div class="card">
+    <div class="alert-box verde">
+      <span>📋</span>
+      <div><strong>Para o preceptor:</strong> avalie as competências observadas. Use N/O quando não foi possível observar a competência no cenário.</div>
+    </div>
+  </div>
+  <div style="padding: 0 12px" id="prec-domains-container"></div>
+  <div class="card">
+    <div class="form-group">
+      <label>Feedback Qualitativo do Preceptor</label>
+      <textarea id="prec-comments" placeholder="Pontos fortes, áreas de melhoria, observações específicas..." style="height:100px" oninput="S.precComments=this.value; save()"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Conceito Global</label>
+      <div class="conceito-sel">
+        <button class="conceito-btn" id="conc-I" onclick="setConceitoGlobal('I',this)">I<br><span style="font-size:8px">Insatisf.</span></button>
+        <button class="conceito-btn" id="conc-R" onclick="setConceitoGlobal('R',this)">R<br><span style="font-size:8px">Regular</span></button>
+        <button class="conceito-btn" id="conc-B" onclick="setConceitoGlobal('B',this)">B<br><span style="font-size:8px">Bom</span></button>
+        <button class="conceito-btn" id="conc-MB" onclick="setConceitoGlobal('MB',this)">MB<br><span style="font-size:8px">M. Bom</span></button>
+        <button class="conceito-btn" id="conc-E" onclick="setConceitoGlobal('E',this)">E<br><span style="font-size:8px">Excelente</span></button>
+      </div>
+    </div>
+    <button class="btn btn-verde" onclick="confirmPreceptor()">✓ Confirmar Avaliação</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ABA 4: RELATÓRIO -->
+<!-- ============================================================ -->
+<div id="screen-relatorio" class="screen">
+  <div class="section-header escuro">
+    <h2>📊 Relatório do Internato</h2>
+    <p>Síntese completa · autoavaliação × preceptor</p>
+  </div>
+  <div class="card" id="rel-content">
+    <div class="empty-state">
+      <div class="icon">📊</div>
+      <p>O relatório é gerado automaticamente à medida que você preenche as demais abas.</p>
+    </div>
+  </div>
+  <div class="card">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Exportar PDF</button>
+    <button class="btn btn-danger" onclick="resetarTudo()" style="margin-top:10px">🗑️ Limpar Todos os Dados</button>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <div style="flex:1">
+    <div style="font-size:13px; font-weight:700">📱 Instalar InternoPed UEA</div>
+    <div style="font-size:11px; color:var(--cinza-escuro); margin-top:2px">Use offline, direto da tela inicial</div>
+  </div>
+  <button onclick="hideInstallBanner()" style="background:none;border:none;font-size:18px;color:var(--cinza-escuro);cursor:pointer;padding:4px">✕</button>
+  <button onclick="installApp()" style="background:var(--azul);color:white;border:none;border-radius:8px;padding:10px 16px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>
+</div>
+
+<!-- UPDATE BANNER -->
+<div id="update-banner">
+  <div style="flex:1;font-size:12px;font-weight:600;color:white">🔄 Nova versão disponível</div>
+  <button onclick="applyUpdate()" style="background:white;color:var(--azul);border:none;border-radius:6px;padding:7px 12px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer">Atualizar</button>
+</div>
+
+<!-- MODAL SYNC -->
+<div class="modal-overlay" id="modal-sync">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Configurar Google Sheets</div>
+    <div style="font-size:12px;color:var(--cinza-escuro);margin-bottom:14px;line-height:1.6">
+      Cole a URL do Web App do Google Apps Script para sincronizar automaticamente.
+    </div>
+    <div style="background:rgba(0,114,188,0.08);border-left:3px solid var(--azul-claro);border-radius:8px;padding:10px 12px;font-size:11px;margin-bottom:14px;line-height:1.7">
+      <strong>Como configurar:</strong><br>
+      1. Acesse <strong>script.google.com</strong><br>
+      2. Novo projeto → cole o código de integração<br>
+      3. Implantar → Nova implantação → App da Web<br>
+      4. Executar como: <strong>Eu</strong> | Acesso: <strong>Qualquer pessoa</strong><br>
+      5. Copie a URL e cole abaixo
+    </div>
+    <div class="form-group">
+      <label>URL do Web App</label>
+      <input type="text" id="input-sync-url" placeholder="https://script.google.com/macros/s/...">
+    </div>
+    <div id="sync-status-info" style="font-size:12px;color:var(--cinza-escuro);margin-bottom:12px"></div>
+    <button class="btn btn-primary" onclick="salvarConfigSync()">✓ Salvar e Testar</button>
+    <button class="btn btn-secondary" onclick="fecharModalSync()" style="margin-top:8px">Cancelar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DOMÍNIOS — SBP NT 134/2024 (45 competências, 6 domínios ACGME)
+// ============================================================
+const DOMAINS = [
+  { id:1, name:'Cuidado com o Paciente', color:'#0072BC', items:[
+    {id:'1.1', txt:'Coleta anamnese pediátrica completa, incluindo história familiar e antecedentes perinatais'},
+    {id:'1.2', txt:'Realiza exame físico completo adaptado à faixa etária, com medidas antropométricas e avaliação do desenvolvimento'},
+    {id:'1.3', txt:'Identifica sinais de alarme e situações de urgência em crianças e adolescentes'},
+    {id:'1.4', txt:'Formula hipóteses diagnósticas e estabelece diagnóstico diferencial em condições pediátricas frequentes'},
+    {id:'1.5', txt:'Solicita e interpreta exames complementares de forma racional e custo-efetiva'},
+    {id:'1.6', txt:'Elabora plano terapêutico considerando aspectos clínicos, sociais e familiares'},
+    {id:'1.7', txt:'Realiza procedimentos básicos com segurança (venopunção, sondagem, curativos, oxigenoterapia)'},
+    {id:'1.8', txt:'Acompanha crescimento e desenvolvimento infantil utilizando curvas e marcos de referência'},
+    {id:'1.9', txt:'Orienta aleitamento materno e alimentação complementar'},
+    {id:'1.10', txt:'Aplica e orienta sobre imunização conforme Calendário Nacional de Vacinação'},
+    {id:'1.11', txt:'Identifica e maneja situações de violência, maus-tratos e vulnerabilidade social'},
+    {id:'1.12', txt:'Reconhece condições de risco ambiental e sociocultural que afetam a saúde da criança'},
+    {id:'1.13', txt:'Realiza atendimento ao recém-nascido na sala de parto e em alojamento conjunto'},
+    {id:'1.14', txt:'Identifica e encaminha adequadamente condições que exigem atenção especializada'},
+    {id:'1.15', txt:'Promove saúde e prevenção de acidentes na infância e adolescência'}
+  ]},
+  { id:2, name:'Conhecimento Médico', color:'#6B2FA0', items:[
+    {id:'2.1', txt:'Demonstra conhecimento das bases fisiopatológicas das doenças prevalentes na infância'},
+    {id:'2.2', txt:'Integra ciências básicas e clínicas no raciocínio diagnóstico e terapêutico'},
+    {id:'2.3', txt:'Conhece e aplica conceitos de farmacocinética e farmacodinâmica relevantes à pediatria'},
+    {id:'2.4', txt:'Domina conteúdo das especialidades pediátricas fundamentais (neonatologia, pneumo, gastro, neuro, cardio, infectologia)'},
+    {id:'2.5', txt:'Aplica conhecimentos de epidemiologia e saúde coletiva ao cuidado pediátrico'},
+    {id:'2.6', txt:'Conhece as políticas públicas de saúde voltadas à criança e ao adolescente'},
+    {id:'2.7', txt:'Demonstra conhecimento sobre medicina baseada em evidências e sua aplicação clínica'},
+    {id:'2.8', txt:'Reconhece aspectos psicológicos e psiquiátricos do desenvolvimento infantil'},
+    {id:'2.9', txt:'Conhece os marcos legais e éticos que regem a prática pediátrica (ECA, direitos da criança)'},
+    {id:'2.10', txt:'Mantém atualização contínua por meio de literatura científica e diretrizes clínicas'}
+  ]},
+  { id:3, name:'Habilidade de Comunicação Interpessoal', color:'#00B4C8', items:[
+    {id:'3.1', txt:'Estabelece comunicação empática, clara e adaptada à faixa etária da criança e ao nível de compreensão dos familiares'},
+    {id:'3.2', txt:'Comunica diagnósticos, prognósticos e planos terapêuticos de forma compreensível e respeitosa'},
+    {id:'3.3', txt:'Realiza registros clínicos (prontuário, evolução, prescrição) de forma clara, completa e ética'},
+    {id:'3.4', txt:'Trabalha colaborativamente com a equipe multiprofissional, comunicando-se de forma construtiva e respeitosa'}
+  ]},
+  { id:4, name:'Profissionalismo', color:'#F5A623', items:[
+    {id:'4.1', txt:'Demonstra comprometimento, pontualidade e assiduidade nas atividades do internato'},
+    {id:'4.2', txt:'Age com integridade, honestidade e transparência nas relações com pacientes, familiares e equipe'},
+    {id:'4.3', txt:'Respeita a autonomia do paciente e dos familiares nas decisões de saúde'},
+    {id:'4.4', txt:'Demonstra sensibilidade cultural e respeito à diversidade dos pacientes atendidos'},
+    {id:'4.5', txt:'Reconhece os limites do seu conhecimento e busca ajuda quando necessário'},
+    {id:'4.6', txt:'Mantém conduta ética e confidencialidade das informações dos pacientes'},
+    {id:'4.7', txt:'Cuida do próprio bem-estar e reconhece sinais de esgotamento (burnout)'},
+    {id:'4.8', txt:'Assume responsabilidade pelos erros e busca aprimoramento contínuo'},
+    {id:'4.9', txt:'Veste-se e porta-se de maneira adequada ao ambiente hospitalar e ambulatorial'}
+  ]},
+  { id:5, name:'Aprendizagem Baseada na Prática e Melhoria Constante', color:'#006B3F', items:[
+    {id:'5.1', txt:'Identifica lacunas no próprio conhecimento e elabora estratégias para superá-las'},
+    {id:'5.2', txt:'Utiliza evidências científicas para embasar decisões clínicas e questionar práticas estabelecidas'},
+    {id:'5.3', txt:'Reflete criticamente sobre o próprio desempenho e incorpora feedbacks para melhoria'}
+  ]},
+  { id:6, name:'Prática Baseada no Sistema de Saúde', color:'#004A7C', items:[
+    {id:'6.1', txt:'Compreende a organização e os fluxos do SUS e do sistema de saúde suplementar aplicados à pediatria'},
+    {id:'6.2', txt:'Utiliza recursos de saúde de forma racional, considerando custo-benefício e equidade'},
+    {id:'6.3', txt:'Participa de iniciativas de melhoria da qualidade e segurança do paciente pediátrico'},
+    {id:'6.4', txt:'Articula ações intersetoriais e de saúde coletiva para promoção da saúde infantil'}
+  ]}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const KEY = 'app_interno_ped_v2';
+let S = {
+  config:{ internName:'', preceptorName:'', startDate:'', endDate:'', morningName:'', afternoonName:'' },
+  attendance:{},
+  selfEval:{},
+  precEval:{},
+  selfComments:'',
+  precComments:'',
+  precGlobal:''
+};
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}
+}
+function loadState() {
+  try { const d=JSON.parse(localStorage.getItem(KEY)); if(d) S=d; } catch(e){}
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function showScreen(name, btn) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='autoaval') buildDomains('auto');
+  if(name==='preceptor') buildDomains('prec');
+  if(name==='relatorio') buildReport();
+  if(name==='frequencia') updateFreqStats();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, tipo='sucesso') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+tipo+' show';
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ============================================================
+// CONFIG
+// ============================================================
+function saveConfig() {
+  S.config.internName    = document.getElementById('cfg-interno').value.trim();
+  S.config.preceptorName = document.getElementById('cfg-preceptor').value.trim();
+  S.config.startDate     = document.getElementById('cfg-inicio').value;
+  S.config.endDate       = document.getElementById('cfg-fim').value;
+  S.config.morningName   = document.getElementById('cfg-manha').value.trim() || 'Manhã';
+  S.config.afternoonName = document.getElementById('cfg-tarde').value.trim() || 'Tarde';
+  save();
+}
+function restoreConfig() {
+  document.getElementById('cfg-interno').value   = S.config.internName   || '';
+  document.getElementById('cfg-preceptor').value = S.config.preceptorName|| '';
+  document.getElementById('cfg-inicio').value    = S.config.startDate    || '';
+  document.getElementById('cfg-fim').value       = S.config.endDate      || '';
+  document.getElementById('cfg-manha').value     = S.config.morningName  || '';
+  document.getElementById('cfg-tarde').value     = S.config.afternoonName|| '';
+}
+
+// ============================================================
+// ATTENDANCE
+// ============================================================
+function cycleAttendance(dateKey, period) {
+  if(!S.attendance[dateKey]) S.attendance[dateKey]={morning:null, afternoon:null};
+  const cur=S.attendance[dateKey][period];
+  S.attendance[dateKey][period] = cur===null?'P': cur==='P'?'A': null;
+  save();
+  const btn=document.getElementById('att-'+period+'-'+dateKey);
+  if(btn) {
+    const v=S.attendance[dateKey][period];
+    btn.textContent=v==='P'?'✓':v==='A'?'✗':'○';
+    btn.className='att-btn '+(v==='P'?'presente':v==='A'?'falta':'');
+  }
+  updateFreqStats();
+}
+
+function getWeekdays(start, end) {
+  const days=[], s=new Date(start+'T12:00:00'), e=new Date(end+'T12:00:00');
+  const cur=new Date(s);
+  while(cur<=e) {
+    const dow=cur.getDay();
+    if(dow!==0&&dow!==6) days.push(cur.toISOString().split('T')[0]);
+    cur.setDate(cur.getDate()+1);
+  }
+  return days;
+}
+
+const WD_PT=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MO_PT=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function fmtDate(d) {
+  const dt=new Date(d+'T12:00:00');
+  return WD_PT[dt.getDay()]+' '+dt.getDate()+' '+MO_PT[dt.getMonth()];
+}
+
+function buildCalendar() {
+  const {startDate,endDate,morningName,afternoonName}=S.config;
+  const container=document.getElementById('calendar-container');
+  if(!startDate||!endDate||startDate>endDate) {
+    container.innerHTML='<div class="empty-state"><div class="icon">📅</div><p>Configure as datas de início e fim para gerar o calendário.</p></div>';
+    return;
+  }
+  const days=getWeekdays(startDate,endDate);
+  if(!days.length) {
+    container.innerHTML='<div class="alert-box aviso"><span>⚠️</span><span>Nenhum dia útil no período selecionado.</span></div>';
+    return;
+  }
+  const mn=morningName||'Manhã', tn=afternoonName||'Tarde';
+  let html=`<div style="overflow-x:auto"><table class="cal-table"><thead><tr>
+    <th>Dia</th><th>🌅 ${mn}</th><th>🌆 ${tn}</th>
+  </tr></thead><tbody>`;
+  days.forEach(d=>{
+    const att=S.attendance[d]||{};
+    const mV=att.morning, aV=att.afternoon;
+    const mT=mV==='P'?'✓':mV==='A'?'✗':'○';
+    const aT=aV==='P'?'✓':aV==='A'?'✗':'○';
+    const mC='att-btn '+(mV==='P'?'presente':mV==='A'?'falta':'');
+    const aC='att-btn '+(aV==='P'?'presente':aV==='A'?'falta':'');
+    html+=`<tr>
+      <td>${fmtDate(d)}</td>
+      <td><button id="att-morning-${d}" class="${mC}" onclick="cycleAttendance('${d}','morning')">${mT}</button></td>
+      <td><button id="att-afternoon-${d}" class="${aC}" onclick="cycleAttendance('${d}','afternoon')">${aT}</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  container.innerHTML=html;
+  updateFreqStats();
+}
+
+function updateFreqStats() {
+  const {startDate,endDate,morningName,afternoonName}=S.config;
+  document.getElementById('stat-manha-lbl').textContent=(morningName||'Manhã').substring(0,10);
+  document.getElementById('stat-tarde-lbl').textContent=(afternoonName||'Tarde').substring(0,10);
+  if(!startDate||!endDate) return;
+  const days=getWeekdays(startDate,endDate);
+  let mP=0,mR=0,aP=0,aR=0;
+  days.forEach(d=>{
+    const att=S.attendance[d]||{};
+    if(att.morning==='P'){mP++;mR++;} else if(att.morning==='A') mR++;
+    if(att.afternoon==='P'){aP++;aR++;} else if(att.afternoon==='A') aR++;
+  });
+  const mPct=mR?Math.round(mP/mR*100):null;
+  const aPct=aR?Math.round(aP/aR*100):null;
+  const gPct=(mR+aR)?Math.round((mP+aP)/(mR+aR)*100):null;
+  document.getElementById('stat-manha').textContent=mPct!==null?mPct+'%':'–';
+  document.getElementById('stat-tarde').textContent=aPct!==null?aPct+'%':'–';
+  document.getElementById('stat-global').textContent=gPct!==null?gPct+'%':'–';
+  const gc=document.getElementById('stat-global-card');
+  if(gPct!==null) {
+    gc.className='freq-stat '+(gPct>=75?'verde':gPct>=60?'amarelo':'vermelho');
+  }
+}
+
+// ============================================================
+// DOMAINS
+// ============================================================
+function buildDomains(who) {
+  const cid=who==='auto'?'auto-domains-container':'prec-domains-container';
+  const container=document.getElementById(cid);
+  const store=who==='auto'?S.selfEval:S.precEval;
+  container.innerHTML=DOMAINS.map(domain=>{
+    const domId=`${who}-dom-${domain.id}`;
+    const avg=getDomainAvg(store,domain);
+    const avgTxt=avg!==null?avg.toFixed(1):'–';
+    const itemsHtml=domain.items.map(item=>{
+      const cur=store[item.id];
+      const r1=cur===1?'sel-1':'',r2=cur===2?'sel-2':'',r3=cur===3?'sel-3':'',r4=cur===4?'sel-4':'';
+      const noS=cur==='NO'?'sel':'';
+      return `<div class="comp-item">
+        <div class="comp-code" style="color:${domain.color}">${item.id}</div>
+        <div class="comp-txt">${item.txt}</div>
+        <div class="rating-row">
+          <button class="rating-btn ${r1}" onclick="setRating('${who}','${item.id}',1,this)">1<br><span style="font-size:8px">Não</span></button>
+          <button class="rating-btn ${r2}" onclick="setRating('${who}','${item.id}',2,this)">2<br><span style="font-size:8px">Parcial</span></button>
+          <button class="rating-btn ${r3}" onclick="setRating('${who}','${item.id}',3,this)">3<br><span style="font-size:8px">Desenv.</span></button>
+          <button class="rating-btn ${r4}" onclick="setRating('${who}','${item.id}',4,this)">4<br><span style="font-size:8px">Pleno</span></button>
+          <button class="no-btn ${noS}" onclick="setRating('${who}','${item.id}','NO',this)">N/O</button>
+        </div>
+        <div class="rating-labels"><span>Não atingi</span><span>Parcial</span><span>Em desenv.</span><span>Atingi</span></div>
+      </div>`;
+    }).join('');
+    return `<div class="domain-block" id="${domId}">
+      <div class="domain-header" onclick="toggleDomain('${domId}')">
+        <div class="domain-header-left">
+          <div class="domain-num" style="background:${domain.color}">${domain.id}</div>
+          <div class="domain-name">${domain.name}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="domain-avg" id="avg-${who}-${domain.id}">${avgTxt}</div>
+          <div class="domain-toggle">▼</div>
+        </div>
+      </div>
+      <div class="domain-body">${itemsHtml}</div>
+    </div>`;
+  }).join('');
+
+  if(who==='auto') {
+    const ta=document.getElementById('auto-comments');
+    if(ta) ta.value=S.selfComments||'';
+  } else {
+    const ta=document.getElementById('prec-comments');
+    if(ta) ta.value=S.precComments||'';
+    restoreConceitoGlobal();
+  }
+}
+
+function toggleDomain(id) { document.getElementById(id).classList.toggle('open'); }
+
+function setRating(who, itemId, val, btn) {
+  const store=who==='auto'?S.selfEval:S.precEval;
+  if(store[itemId]===val) delete store[itemId]; else store[itemId]=val;
+  save();
+  const row=btn.parentElement;
+  row.querySelectorAll('.rating-btn').forEach(b=>b.className='rating-btn');
+  row.querySelectorAll('.no-btn').forEach(b=>b.className='no-btn');
+  if(store[itemId]!==undefined) {
+    if(val==='NO') btn.classList.add('sel');
+    else btn.classList.add('sel-'+val);
+  }
+  const domain=DOMAINS.find(d=>d.items.some(i=>i.id===itemId));
+  if(domain) {
+    const store2=who==='auto'?S.selfEval:S.precEval;
+    const avg=getDomainAvg(store2,domain);
+    const el=document.getElementById(`avg-${who}-${domain.id}`);
+    if(el) el.textContent=avg!==null?avg.toFixed(1):'–';
+  }
+}
+
+function getDomainAvg(store, domain) {
+  const vals=domain.items.map(i=>store[i.id]).filter(v=>v&&v!=='NO');
+  return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+}
+
+function setConceitoGlobal(val, btn) {
+  S.precGlobal=val; save();
+  document.querySelectorAll('.conceito-btn').forEach(b=>{ b.className='conceito-btn'; });
+  btn.classList.add('sel-'+val);
+}
+function restoreConceitoGlobal() {
+  if(S.precGlobal) {
+    const btn=document.getElementById('conc-'+S.precGlobal);
+    if(btn) btn.classList.add('sel-'+S.precGlobal);
+  }
+}
+
+function confirmAutoaval() {
+  save(); showToast('✓ Autoavaliação registrada!'); syncIfConfigured();
+}
+function confirmPreceptor() {
+  save(); showToast('✓ Avaliação do preceptor registrada!'); syncIfConfigured();
+}
+
+// ============================================================
+// RELATÓRIO
+// ============================================================
+function buildReport() {
+  const container=document.getElementById('rel-content');
+  const {internName,preceptorName,startDate,endDate,morningName,afternoonName}=S.config;
+  if(!internName && !startDate) {
+    container.innerHTML='<div class="empty-state"><div class="icon">📊</div><p>Preencha a configuração do internato para gerar o relatório.</p></div>';
+    return;
+  }
+  const days=(startDate&&endDate)?getWeekdays(startDate,endDate):[];
+  let mP=0,mR=0,aP=0,aR=0;
+  days.forEach(d=>{
+    const att=S.attendance[d]||{};
+    if(att.morning==='P'){mP++;mR++;} else if(att.morning==='A') mR++;
+    if(att.afternoon==='P'){aP++;aR++;} else if(att.afternoon==='A') aR++;
+  });
+  const mPct=mR?Math.round(mP/mR*100):null;
+  const aPct=aR?Math.round(aP/aR*100):null;
+  const gPct=(mR+aR)?Math.round((mP+aP)/(mR+aR)*100):null;
+  const fmtPct=p=>p!==null?p+'%':'–';
+  const barCls=p=>p>=75?'verde':p>=60?'amarelo':'vermelho';
+  const fmtBR=d=>d?d.split('-').reverse().join('/'):'–';
+
+  const domainBars=DOMAINS.map(d=>{
+    const sA=getDomainAvg(S.selfEval,d), pA=getDomainAvg(S.precEval,d);
+    const sP=sA!==null?(sA/4*100).toFixed(0):0;
+    const pP=pA!==null?(pA/4*100).toFixed(0):0;
+    return `<div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;margin-bottom:5px;color:${d.color}">${d.id}. ${d.name}</div>
+      <div class="rel-bar-row">
+        <div class="rel-bar-who" style="color:var(--azul-claro)">Auto</div>
+        <div class="rel-bar-bg"><div class="rel-bar auto-bar" style="width:${sP}%"></div></div>
+        <div class="rel-bar-val">${sA!==null?sA.toFixed(1):'–'}</div>
+      </div>
+      <div class="rel-bar-row">
+        <div class="rel-bar-who" style="color:var(--verde)">Prec</div>
+        <div class="rel-bar-bg"><div class="rel-bar prec-bar" style="width:${pP}%"></div></div>
+        <div class="rel-bar-val">${pA!==null?pA.toFixed(1):'–'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const conceitoMap={I:'Insatisfatório',R:'Regular',B:'Bom',MB:'Muito Bom',E:'Excelente'};
+  const conceitoColors={I:'var(--vermelho)',R:'#7A4A00',B:'var(--azul-claro)',MB:'var(--verde)',E:'var(--verde)'};
+  const gc=S.precGlobal;
+  const now=new Date().toLocaleString('pt-BR');
+
+  container.innerHTML=`
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:8px">📋 Identificação</div>
+      <div class="rel-meta">
+        <strong>Interno:</strong> ${internName||'–'}<br>
+        <strong>Preceptor:</strong> ${preceptorName||'–'}<br>
+        <strong>Período:</strong> ${fmtBR(startDate)} a ${fmtBR(endDate)}<br>
+        <strong>Cenário Manhã:</strong> ${morningName||'Manhã'}<br>
+        <strong>Cenário Tarde:</strong> ${afternoonName||'Tarde'}
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:8px">📅 Frequência</div>
+      <div class="freq-stats-grid" style="margin-bottom:10px">
+        <div class="freq-stat azul"><div class="fs-val">${fmtPct(mPct)}</div><div class="fs-label">${morningName||'Manhã'}</div></div>
+        <div class="freq-stat verde"><div class="fs-val">${fmtPct(aPct)}</div><div class="fs-label">${afternoonName||'Tarde'}</div></div>
+        <div class="freq-stat ${gPct!==null?barCls(gPct):''}"><div class="fs-val">${fmtPct(gPct)}</div><div class="fs-label">Global</div></div>
+      </div>
+      ${gPct!==null?`<div class="prog-bar-wrap">
+        <div class="prog-bar-label"><span>Presença global</span><span style="color:var(--${barCls(gPct)})">${gPct}%</span></div>
+        <div class="prog-bar-bg"><div class="prog-bar ${barCls(gPct)}" style="width:${gPct}%"></div></div>
+      </div>`:''}
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:10px">📊 Competências por Domínio</div>
+      <div style="display:flex;gap:16px;margin-bottom:10px;font-size:11px;font-weight:600">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:8px;background:var(--azul-claro);border-radius:3px;display:inline-block"></span>Autoavaliação</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:8px;background:var(--verde);border-radius:3px;display:inline-block"></span>Preceptor</span>
+      </div>
+      ${domainBars}
+    </div>
+    ${S.selfComments?`<div class="divider"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:6px">💬 Reflexão do Interno</div>
+      <div style="font-size:12px;line-height:1.6;background:rgba(0,114,188,0.05);border-radius:8px;padding:10px 12px;border-left:3px solid var(--azul-claro)">${S.selfComments}</div>
+    </div>`:''}
+    ${S.precComments?`<div class="divider"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:6px">💬 Feedback do Preceptor</div>
+      <div style="font-size:12px;line-height:1.6;background:rgba(0,107,63,0.05);border-radius:8px;padding:10px 12px;border-left:3px solid var(--verde)">${S.precComments}</div>
+    </div>`:''}
+    ${gc?`<div class="divider"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;margin-bottom:8px">🏅 Conceito Global</div>
+      <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(0,0,0,0.04);border-radius:10px;padding:12px 16px">
+        <span style="font-size:28px;font-weight:800;color:${conceitoColors[gc]}">${gc}</span>
+        <span style="font-size:14px;font-weight:700;color:${conceitoColors[gc]}">${conceitoMap[gc]}</span>
+      </div>
+    </div>`:''}
+    <div class="divider"></div>
+    <div style="font-size:10px;color:var(--cinza-escuro);text-align:center;line-height:1.6">
+      Gerado em ${now}<br>
+      Baseado na SBP Nota Técnica nº 134/2024<br>
+      Competências para estudantes de medicina em Pediatria<br>
+      InternoPed UEA · Universidade do Estado do Amazonas
+    </div>`;
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetarTudo() {
+  if(!confirm('Isso apagará TODOS os dados. Tem certeza?')) return;
+  S={config:{internName:'',preceptorName:'',startDate:'',endDate:'',morningName:'',afternoonName:''},
+     attendance:{},selfEval:{},precEval:{},selfComments:'',precComments:'',precGlobal:''};
+  save(); restoreConfig(); buildCalendar();
+  showToast('Dados apagados','erro');
+}
+
+// ============================================================
+// SYNC
+// ============================================================
+function getScriptUrl(){ return localStorage.getItem('interno_script_url')||''; }
+
+function atualizarStatusSync() {
+  const btn=document.getElementById('btn-sync');
+  if(!btn) return;
+  if(!getScriptUrl()){ btn.textContent='⚙️ Config'; btn.onclick=abrirModalSync; }
+  else { btn.textContent='↑ Sync'; btn.onclick=syncData; }
+}
+
+async function syncData() {
+  const url=getScriptUrl();
+  if(!url){ abrirModalSync(); return; }
+  const btn=document.getElementById('btn-sync');
+  if(btn) btn.textContent='🔄 Enviando...';
+  try {
+    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({tipo:'interno',dados:S})});
+    const json=await res.json();
+    showToast(json.ok?'☁️ Sincronizado!':'⚠️ Erro ao sincronizar',json.ok?'sucesso':'erro');
+  } catch(e){ showToast('📵 Sem conexão — dados salvos localmente','erro'); }
+  if(btn) btn.textContent='↑ Sync';
+}
+
+async function syncIfConfigured(){ if(getScriptUrl()) await syncData(); }
+
+function abrirModalSync() {
+  document.getElementById('input-sync-url').value=getScriptUrl();
+  document.getElementById('modal-sync').classList.add('show');
+}
+function fecharModalSync(){ document.getElementById('modal-sync').classList.remove('show'); }
+function salvarConfigSync() {
+  const url=document.getElementById('input-sync-url').value.trim();
+  if(!url.startsWith('https://script.google.com')){ showToast('URL inválida','erro'); return; }
+  localStorage.setItem('interno_script_url',url);
+  fecharModalSync(); showToast('✓ URL salva! Testando...'); atualizarStatusSync();
+  setTimeout(async()=>{
+    try { const r=await fetch(url); const j=await r.json(); showToast(j.ok?'✅ Conexão OK!':'⚠️ Erro',j.ok?'sucesso':'erro'); }
+    catch(e){ showToast('❌ Não foi possível conectar','erro'); }
+  },500);
+}
+document.getElementById('modal-sync').addEventListener('click',function(e){ if(e.target===this) fecharModalSync(); });
+
+// ============================================================
+// PWA
+// ============================================================
+let deferredPrompt=null;
+if('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./interno_sw.js').then(reg=>{
+      reg.addEventListener('updatefound',()=>{
+        const nw=reg.installing;
+        nw.addEventListener('statechange',()=>{
+          if(nw.state==='installed'&&navigator.serviceWorker.controller)
+            document.getElementById('update-banner').style.display='flex';
+        });
+      });
+    }).catch(e=>console.warn('[SW]',e));
+  });
+}
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('install-banner').style.display='flex'; });
+window.addEventListener('appinstalled',()=>{ deferredPrompt=null; document.getElementById('install-banner').style.display='none'; showToast('✓ App instalado!'); });
+function hideInstallBanner(){ document.getElementById('install-banner').style.display='none'; }
+async function installApp(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  if(outcome==='accepted') showToast('✓ Instalando...');
+  deferredPrompt=null; hideInstallBanner();
+}
+function applyUpdate(){
+  navigator.serviceWorker.getRegistration().then(reg=>{
+    if(reg&&reg.waiting){ reg.waiting.postMessage({type:'SKIP_WAITING'}); window.location.reload(); }
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  loadState(); restoreConfig(); buildCalendar(); updateFreqStats(); atualizarStatusSync();
+  window.addEventListener('online',()=>{ showToast('🌐 Online — sincronizando...'); setTimeout(syncIfConfigured,1000); });
+});
+</script>
+</body>
+</html>
