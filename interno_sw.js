@@ -1,6 +1,6 @@
 // InternoPed UEA — Service Worker
 // Versão do cache: atualize este número ao fazer deploy de nova versão
-const CACHE_NAME = 'internoped-uea-v1';
+const CACHE_NAME = 'internoped-uea-v2';
 const CACHE_URLS = [
   './APP_Interno_Pediatria.html',
   './interno_manifest.json'
